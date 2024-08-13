@@ -26,7 +26,7 @@ public class BrowsersMetric extends MetricAbstractClass{
             Browser browser = userAgent.getBrowser();
 
             if (browser != null) {
-                this.getConcurrentHashMap().put(browser.getName(), this.getConcurrentHashMap().getOrDefault(browser.getName(), 0.0) + 1);
+                this.updateConcurrentHashMap(browser.getName());
             } else {
                 System.err.println("Browser not found");
             }

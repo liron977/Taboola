@@ -1,14 +1,9 @@
 package metrics;
 
-import com.maxmind.geoip2.DatabaseReader;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
-
-import static constants.constants.COUNTRIES_DB;
 
 public abstract class MetricAbstractClass implements MetricInterface {
 
@@ -21,20 +16,24 @@ public abstract class MetricAbstractClass implements MetricInterface {
 
     }
 
-    public Pattern getRegex() {
+    protected Pattern getRegex() {
         return regex;
     }
 
 
-    public ConcurrentHashMap<String, Double> getConcurrentHashMap() {
+    protected ConcurrentHashMap<String, Double> getConcurrentHashMap() {
         return concurrentHashMap;
     }
 
     @Override
     public abstract void  calculateMetric(String line);
 
-    @Override
-    public List<String> getResultsList() {
+    protected void updateConcurrentHashMap(String key){
+        this.concurrentHashMap.put(key, this.getConcurrentHashMap().getOrDefault(key, 0.0) + 1);
+    }
+
+
+    private List<String> getResultsList() {
         List<String> countriesResult = new ArrayList<>();
         double usersAmount = 0;
 
@@ -52,7 +51,7 @@ public abstract class MetricAbstractClass implements MetricInterface {
 
         }
 
-        HashMap<String, Double> sortedHashMap=sortByValueDescending(this.concurrentHashMap);
+        Map<String, Double> sortedHashMap=sortByValueDescending(this.concurrentHashMap);
         for (String key : sortedHashMap.keySet()) {
 
             String formattedPercentage = String.format("%.2f", sortedHashMap.get(key));
@@ -74,7 +73,7 @@ public abstract class MetricAbstractClass implements MetricInterface {
         }
         System.out.println();
     }
-    private  HashMap<String, Double> sortByValueDescending(ConcurrentHashMap<String, Double> map) {
+    private  Map<String, Double> sortByValueDescending(ConcurrentHashMap<String, Double> map) {
         // Convert map to list of entries
         List<Map.Entry<String, Double>> list = new ArrayList<>(map.entrySet());
 

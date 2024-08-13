@@ -1,5 +1,6 @@
 package logProcessing;
 
+import lombok.Value;
 import metrics.BrowsersMetric;
 import metrics.MetricInterface;
 import metrics.OperatingSystemsMetric;
@@ -15,16 +16,17 @@ public class ProcessLog {
     private final MetricInterface countriesMetric;
     private final OperatingSystemsMetric operatingSystemsMetric;
     private final BrowsersMetric browsersMetric;
+
     public ProcessLog(MetricInterface countriesMetric, OperatingSystemsMetric operatingSystemsMetric, BrowsersMetric browsersMetric){
         this.countriesMetric=countriesMetric;
         this.operatingSystemsMetric=operatingSystemsMetric;
         this.browsersMetric=browsersMetric;
     }
-    public void readRequestsFromLog() throws InterruptedException {
-            File logFile = new File(FILE_PATH);
+    public void readRequestsFromLog(BufferedReader bufferedReader) throws InterruptedException {
+
             ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
+            try (BufferedReader reader =bufferedReader) {
                 String line;
                 int lineCount = 0;
                 StringBuilder chunk = new StringBuilder();
@@ -54,7 +56,6 @@ public class ProcessLog {
         // Shutdown the executor service and wait for all tasks to complete
             executorService.shutdown();
             executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-
 
         }
 }

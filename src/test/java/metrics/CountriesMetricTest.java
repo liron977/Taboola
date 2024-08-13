@@ -28,17 +28,11 @@ public class CountriesMetricTest {
     public void testCalculateMetricValidIp() {
         String logLine = "72.14.199.75 - - [21/Jan/2013:00:00:34 -0600] \"GET /?utm_source=Contextin&utm_term=_ HTTP/1.1\" 200 9983 \"-\" \"AdsBot-Google (+http://www.google.com/adsbot.html)\" 267 10246 - 549397\n";
         System.out.println(logLine);
-        assertTrue(countriesMetric.getConcurrentHashMap().size() > 0);
+
         assertFalse(countriesMetric.getConcurrentHashMap().isEmpty());
         assertTrue(countriesMetric.getConcurrentHashMap().containsKey("United States")); // assuming 192.168.0.1 is in the U.S.
     }
 
-    @Test
-    public void testGetResultsList() {
-        String logLine = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326";
-        countriesMetric.calculateMetric(logLine);
-        assertFalse(countriesMetric.getResultsList().isEmpty());
-    }
     @Test
     public void testCalculateMetricNoCountryInfo() throws IOException, GeoIp2Exception {
         String logLine = "10.0.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326";
@@ -91,5 +85,20 @@ public class CountriesMetricTest {
         countriesMetric.calculateMetric(logLine);
         assertTrue(countriesMetric.getConcurrentHashMap().isEmpty());
     }
+
+    @Test
+    public void testPrintResultsValues() {
+        String logLine = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326";
+        countriesMetric.calculateMetric(logLine);
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        countriesMetric.printResults();
+
+        String output = outContent.toString();
+        assertTrue(output.contains("United States")); // assuming 192.168.0.1 is in the U.S.
+    }
+
 
 }

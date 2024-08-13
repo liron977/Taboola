@@ -28,7 +28,7 @@ public class OperatingSystemsMetric extends MetricAbstractClass {
             OperatingSystem os = userAgent.getOperatingSystem();
 
             if (os != null) {
-                this.getConcurrentHashMap().put(os.getName(), this.getConcurrentHashMap().getOrDefault(os.getName(), 0.0) + 1);
+                this.updateConcurrentHashMap(os.getName());
             } else {
                 System.err.println("Operating system not found");
             }
