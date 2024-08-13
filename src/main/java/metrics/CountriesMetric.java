@@ -22,6 +22,10 @@ public class CountriesMetric extends MetricAbstractClass {
         this.dbReader=new DatabaseReader.Builder(database).build();
     }
 
+    public DatabaseReader getDbReader() {
+        return dbReader;
+    }
+
     @Override
     public void calculateMetric(String line) {
         Matcher ipMatcher = this.getRegex().matcher(line);
