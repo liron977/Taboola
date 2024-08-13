@@ -72,6 +72,7 @@ public abstract class MetricAbstractClass implements MetricInterface {
         for (String result:resultsList) {
             System.out.println(result);
         }
+        System.out.println();
     }
     private  HashMap<String, Double> sortByValueDescending(ConcurrentHashMap<String, Double> map) {
         // Convert map to list of entries

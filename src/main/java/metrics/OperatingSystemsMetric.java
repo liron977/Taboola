@@ -14,7 +14,7 @@ public class OperatingSystemsMetric extends MetricAbstractClass {
 
 
     public OperatingSystemsMetric() throws IOException {
-        super(Pattern.compile(OS__PATTERN));
+        super(Pattern.compile(OS_PATTERN));
     }
 
     @Override
