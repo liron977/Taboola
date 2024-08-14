@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import static constants.constants.*;
 
+
 public class CountriesMetric extends MetricAbstractClass {
 
     private final DatabaseReader dbReader;
@@ -63,7 +64,7 @@ public class CountriesMetric extends MetricAbstractClass {
     }
 
 
-    //I want to use the api but, I reached the time limit
+    //I wanted to use the api but, I reached the request limit
 //    public static String getCountryFromIp(String ipAddress) throws Exception {
 //
 //        String apiUrl = "https://api.ipgeolocation.io/ipgeo?apiKey=" + API_KEY + "&ip=" + ipAddress;

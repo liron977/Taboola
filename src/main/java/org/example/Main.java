@@ -12,6 +12,7 @@ import java.io.*;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 
 
 import static constants.constants.FILE_PATH;

@@ -85,5 +85,80 @@ public class OperatingSystemsMetricTest {
         String output = outContent.toString().trim();
         assertTrue(output.contains("Windows 10"));
     }
+    @Test
+    public void testCalculateMetric_SameOSMultipleTimes() {
+        String logLine1 = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"";
+        String logLine2 = "192.168.0.2 - - [24/Apr/2023:06:26:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"";
+        operatingSystemsMetric.calculateMetric(logLine1);
+        operatingSystemsMetric.calculateMetric(logLine2);
+
+        // Check that Windows 10 was added twice
+        assertEquals(1, operatingSystemsMetric.getConcurrentHashMap().size());
+        assertTrue(operatingSystemsMetric.getConcurrentHashMap().containsKey("Windows 10"));
+        Double count = operatingSystemsMetric.getConcurrentHashMap().get("Windows 10");
+        assertEquals(2, count.intValue());
+
+    }
+
+    @Test
+    public void testCalculateMetric_EmptyLogLine() {
+        String logLine = "";
+        operatingSystemsMetric.calculateMetric(logLine);
+
+        // Check that the map remains empty since the log line was empty
+        assertTrue(operatingSystemsMetric.getConcurrentHashMap().isEmpty());
+    }
+
+    @Test
+    public void testCalculateMetric_NullLogLine() {
+        String logLine = null;
+        operatingSystemsMetric.calculateMetric(logLine);
+
+        // Check that the map remains empty since the log line was null
+        assertTrue(operatingSystemsMetric.getConcurrentHashMap().isEmpty());
+    }
+
+    @Test
+    public void testPrintResults_MultipleOperatingSystems() {
+        String logLine1 = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"";
+        String logLine2 = "192.168.0.2 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15\"";
+        operatingSystemsMetric.calculateMetric(logLine1);
+        operatingSystemsMetric.calculateMetric(logLine2);
+
+        // Capture the console output for testing printResults
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        operatingSystemsMetric.printResults();
+
+        String output = outContent.toString().trim();
+        assertTrue(output.contains("Windows 10"));
+        assertTrue(output.contains("Mac OS X"));
+    }
+
+    @Test
+    public void testCalculateMetric_MultipleInvalidUserAgents() {
+        String logLine1 = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"InvalidUserAgentString1\"";
+        String logLine2 = "192.168.0.2 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"InvalidUserAgentString2\"";
+        operatingSystemsMetric.calculateMetric(logLine1);
+        operatingSystemsMetric.calculateMetric(logLine2);
+
+        // Check that the map is still empty since no valid OS was found in either log line
+        assertTrue(operatingSystemsMetric.getConcurrentHashMap().isEmpty());
+    }
+
+    @Test
+    public void testCalculateMetric_OSWithDifferentCase() {
+        String logLine1 = "192.168.0.1 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"";
+        String logLine2 = "192.168.0.2 - - [24/Apr/2023:06:25:24 +0000] \"GET /index.html HTTP/1.1\" 200 2326 \"Mozilla/5.0 (windows nt 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36\"";
+        operatingSystemsMetric.calculateMetric(logLine1);
+        operatingSystemsMetric.calculateMetric(logLine2);
+
+        // Check that "Windows 10" was added twice, despite different casing in the user agent string
+        assertEquals(1, operatingSystemsMetric.getConcurrentHashMap().size());
+        Double count = operatingSystemsMetric.getConcurrentHashMap().get("Windows 10");
+        assertEquals(2, count.intValue());
+
+    }
 
 }

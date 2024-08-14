@@ -8,7 +8,7 @@ public class constants {
     public static final String USER_AGENT_PATTERN = "\"([^\"]+)\"\\s+\"([^\"]+)\"\\s+\\d+\\s+\\d+\\s+-\\s+\\d+$";
     public static final String OS_PATTERN = "\\(([^)]+)\\)";
     public static final String BROWSER_PATTERN = "\"[^\"]*\"\\s\"[^\"]*\"\\s\"([^\"]+)\"";
-    public static final String API_KEY = "8f3b09d1cab64f2aa656f02616d070db"; // Replace with your ipgeolocation.io API key
+    public static final String API_KEY = "8f3b09d1cab64f2aa656f02616d070db";
 
     public static final String COUNTRIES_DB ="src/resources/GeoLite2-Country_20240809/GeoLite2-Country.mmdb";
 }
