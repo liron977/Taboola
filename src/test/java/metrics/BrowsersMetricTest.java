@@ -1,22 +1,17 @@
 package metrics;
 
 
+import eu.bitwalker.useragentutils.Browser;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.OperatingSystem;
-import eu.bitwalker.useragentutils.UserAgent;
 import org.mockito.MockedStatic;
-
-import static org.mockito.Mockito.*;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
-import static constants.constants.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class BrowsersMetricTest {
@@ -45,7 +40,7 @@ public class BrowsersMetricTest {
         when(mockUserAgent.getBrowser()).thenReturn(mockBrowser);
 
         // Mock the static method UserAgent.parseUserAgentString
-        try (MockedStatic<UserAgent> mockedUserAgent = mockStatic(UserAgent.class)) {
+        try (MockedStatic<UserAgent> mockedUserAgent = Mockito.mockStatic(UserAgent.class)) {
             mockedUserAgent.when(() -> UserAgent.parseUserAgentString(anyString())).thenReturn(mockUserAgent);
 
             // Call the method under test
